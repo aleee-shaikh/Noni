@@ -1,701 +1,2320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noni Robotics System</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>NONI | AI-Powered Service Robot</title>
+
+    <meta name="description"
+          content="NONI — an AI-powered autonomous service robot designed for healthcare, hospitality, education and intelligent service environments.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
 
     <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
             scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter',sans-serif;
-            background: #0b0f19;
-            color: white;
+            font-family: 'Inter', sans-serif;
+            background: #05070d;
+            color: #ffffff;
             overflow-x: hidden;
-            padding-top: 80px;
+        }
+
+        body::selection {
+            background: #ff5722;
+            color: white;
         }
 
         a {
-            text-decoration: none;
             color: inherit;
+            text-decoration: none;
         }
 
-        /* NAVBAR */
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
-       
+        section {
+            position: relative;
+        }
+
+
+        /* =========================================================
+           SCROLL PROGRESS
+        ========================================================= */
+
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(
+                90deg,
+                #ff5722,
+                #ff8a65,
+                #00c9ff
+            );
+            z-index: 9999;
+        }
+
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -3;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 60px 60px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 85%
+            );
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(100px);
+            opacity: 0.18;
+            z-index: -2;
+        }
+
+        .orb.one {
+            width: 500px;
+            height: 500px;
+            background: #ff5722;
+            top: -150px;
+            left: -150px;
+        }
+
+        .orb.two {
+            width: 500px;
+            height: 500px;
+            background: #008cff;
+            right: -180px;
+            top: 35%;
+        }
+
+
+        /* =========================================================
+           NAVIGATION
+        ========================================================= */
 
         .nav {
             position: fixed;
             top: 0;
             left: 0;
+
             width: 100%;
-            height: 80px;
+            height: 82px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 60px;
-            background: rgba(10,10,20,0.85);
-            backdrop-filter: blur(12px);
+
+            padding: 0 6%;
+
             z-index: 1000;
+
+            background: rgba(5,7,13,0.45);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            transition: 0.35s ease;
         }
 
-        /* ⭐ FIX LOGO CENTER */
+        .nav.scrolled {
+            height: 68px;
+            background: rgba(5,7,13,0.92);
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
         .logo {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            min-width: 120px;
+            gap: 12px;
         }
 
-            .logo img {
-                height: 42px;
-                display: block;
-                margin: 0 auto;
-            }
+        .logo img {
+            height: 42px;
+            width: auto;
+        }
 
-        .logo-text {
-            font-size: 1rem;
+        .logo-name {
+            font-size: 1.05rem;
             font-weight: 800;
-            letter-spacing: 1px;
-            margin-top: 2px;
+            letter-spacing: 2px;
         }
 
-        /* NAV LINKS CENTER FIX */
-        .nav nav {
+        .logo-name span {
+            color: #ff5722;
+        }
+
+        .nav-links {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 30px;
         }
 
+        .nav-links a {
+            position: relative;
 
-            .nav nav a {
-                color: #d6d6d6;
-                font-size: 0.95rem;
-                transition: 0.3s;
-                position: relative;
-            }
+            color: #bfc4cc;
 
-                .nav nav a:hover {
-                    color: #ff5722;
-                }
+            font-size: 0.86rem;
+            font-weight: 500;
 
-        /* HERO */
+            transition: 0.3s;
+        }
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+
+            width: 0;
+            height: 2px;
+
+            background: #ff5722;
+
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 10px 18px;
+
+            border: 1px solid rgba(255,87,34,0.5);
+            border-radius: 30px;
+
+            color: white !important;
+
+            background: rgba(255,87,34,0.08);
+
+            transition: 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            background: #ff5722;
+            border-color: #ff5722;
+            transform: translateY(-2px);
+        }
+
+        .nav-cta::after {
+            display: none;
+        }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
 
         .hero {
-            height: 100vh;
+            min-height: 100vh;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             text-align: center;
-            position: relative;
+
+            padding: 130px 6% 80px;
+
             overflow: hidden;
-            background: radial-gradient(circle at top left,#ff572230,transparent 30%), radial-gradient(circle at bottom right,#00bcd430,transparent 30%), #0b0f19;
         }
 
         .hero-content {
+            width: 100%;
+            max-width: 1250px;
             z-index: 2;
-            /*max-width: 900px;*/
-            padding: 20px;
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.1;
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 8px 15px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+
+            background: rgba(255,255,255,0.035);
+
+            color: #bfc4cc;
+
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            margin-bottom: 25px;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #cfcfcf;
-            margin-bottom: 35px;
-        }
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
 
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 50px;
-            background: linear-gradient(135deg,#ff5722,#ff784e);
-            color: white;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-            .btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 25px rgba(255,87,34,0.35);
-            }
-
-        .glow {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: #ff572240;
             border-radius: 50%;
-            filter: blur(120px);
-            animation: float 6s ease-in-out infinite;
+
+            background: #ff5722;
+
+            box-shadow: 0 0 15px #ff5722;
+
+            animation: pulse 1.8s infinite;
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
+        @keyframes pulse {
+
+            0%,100% {
+                opacity: 1;
+                transform: scale(1);
             }
 
             50% {
-                transform: translateY(-30px);
-            }
-
-            100% {
-                transform: translateY(0px);
+                opacity: 0.4;
+                transform: scale(1.6);
             }
         }
 
-        /* SECTION */
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 6.8rem);
+            line-height: 0.95;
 
-        .section {
-            padding: 20px 8%;
+            font-weight: 900;
+
+            letter-spacing: -5px;
+
+            margin-bottom: 25px;
         }
 
-            .section h2 {
-                text-align: center;
-                font-size: 2.5rem;
-                margin-bottom: 60px;
-                font-weight: 800;
-            }
+        .hero h1 .gradient {
+            background: linear-gradient(
+                110deg,
+                #ffffff 10%,
+                #ff784e 50%,
+                #00c9ff 90%
+            );
 
-        .dark {
-            background: #111827;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        /* VIDEO */
+        .hero-description {
+            max-width: 760px;
 
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
-            gap: 25px;
+            margin: 0 auto 35px;
+
+            color: #aeb4bf;
+
+            font-size: 1.12rem;
+            line-height: 1.8;
         }
 
-            .video-grid iframe {
-                width: 100%;
-                height: 260px;
-                border: none;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            }
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
 
-        /* GRID */
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-            gap: 25px;
+            margin-bottom: 55px;
         }
 
-        .card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 30px;
-            border-radius: 24px;
-            backdrop-filter: blur(12px);
-            transition: 0.35s;
-        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-            .card:hover {
-                transform: translateY(-8px);
-                border-color: #ff5722;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.35);
-            }
+            padding: 14px 26px;
 
-            .card h3 {
-                margin-bottom: 15px;
-                color: #ff784e;
-                font-size: 1.2rem;
-            }
+            border-radius: 8px;
 
-            .card p {
-                color: #d2d2d2;
-                line-height: 1.7;
-            }
+            font-weight: 600;
+            font-size: 0.9rem;
 
-        /* TEAM */
-
-        .team {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-            gap: 30px;
-            text-align: center;
-        }
-
-        .member {
-            background: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 24px;
             transition: 0.3s;
         }
 
-            .member:hover {
-                transform: translateY(-8px);
-            }
+        .btn-primary {
+            background: linear-gradient(
+                135deg,
+                #ff5722,
+                #ff784e
+            );
 
-            .member img {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 4px solid #ff5722;
-                margin-bottom: 20px;
-            }
-
-            .member h3 {
-                margin-bottom: 8px;
-            }
-
-            .member p {
-                color: #ccc;
-            }
-
-        /* LINKS */
-
-        .links {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
+            box-shadow:
+                0 10px 35px rgba(255,87,34,0.2);
         }
 
-            .links a {
-                padding: 14px 28px;
-                border-radius: 50px;
-                background: #ff5722;
-                color: white;
-                transition: 0.3s;
-                font-weight: 600;
-            }
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 15px 45px rgba(255,87,34,0.35);
+        }
 
-                .links a:hover {
-                    transform: translateY(-3px);
-                    background: #ff784e;
-                }
+        .btn-secondary {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: #ddd;
+        }
 
-        /* CONTACT */
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.08);
+        }
 
-        .contact-info {
+
+        /* HERO VIDEO */
+
+        .hero-video {
+            position: relative;
+
+            width: min(1100px, 94vw);
+
+            margin: auto;
+
+            padding: 7px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,87,34,0.5),
+                    rgba(255,255,255,0.08),
+                    rgba(0,201,255,0.35)
+                );
+
+            box-shadow:
+                0 30px 100px rgba(0,0,0,0.55);
+
+            transform: translateY(0);
+
+            transition: 0.5s;
+        }
+
+        .hero-video:hover {
+            transform: translateY(-5px);
+        }
+
+        .hero-video iframe {
+            width: 100%;
+            height: min(62vh, 620px);
+
+            display: block;
+
+            border: none;
+            border-radius: 15px;
+
+            background: #000;
+        }
+
+        .video-label {
+            position: absolute;
+
+            bottom: 22px;
+            left: 25px;
+
+            padding: 7px 12px;
+
+            border-radius: 6px;
+
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(10px);
+
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            color: #ddd;
+        }
+
+
+        /* =========================================================
+           SECTION
+        ========================================================= */
+
+        .section {
+            padding: 120px 7%;
+        }
+
+        .section.dark {
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255,255,255,0.015),
+                    rgba(255,255,255,0.025)
+                );
+        }
+
+        .section-header {
+            max-width: 750px;
+            margin: 0 auto 60px;
             text-align: center;
-            margin-top: 25px;
         }
 
-            .contact-info p {
-                margin-bottom: 15px;
-                color: #d0d0d0;
-                font-size: 1.05rem;
-            }
+        .section-tag {
+            color: #ff7043;
+
+            font-size: 0.72rem;
+            font-weight: 700;
+
+            letter-spacing: 2px;
+            text-transform: uppercase;
+
+            margin-bottom: 15px;
+        }
+
+        .section h2 {
+            font-size: clamp(2.1rem, 4vw, 3.5rem);
+
+            line-height: 1.1;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 18px;
+        }
+
+        .section-header p {
+            color: #969eaa;
+            line-height: 1.8;
+        }
+
+
+        /* =========================================================
+           FEATURE GRID
+        ========================================================= */
+
+        .grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(270px, 1fr));
+
+            gap: 18px;
+
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .card {
+            position: relative;
+
+            padding: 30px;
+
+            min-height: 210px;
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255,255,255,0.07);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.055),
+                    rgba(255,255,255,0.018)
+                );
+
+            overflow: hidden;
+
+            transition:
+                transform 0.4s ease,
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            right: -90px;
+            top: -90px;
+
+            border-radius: 50%;
+
+            background: #ff5722;
+
+            filter: blur(90px);
+
+            opacity: 0;
+
+            transition: 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+
+            border-color:
+                rgba(255,87,34,0.4);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .card:hover::before {
+            opacity: 0.12;
+        }
+
+        .card-number {
+            color: #ff5722;
+
+            font-size: 0.7rem;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            font-size: 1.12rem;
+            margin-bottom: 13px;
+        }
+
+        .card p {
+            color: #929aa6;
+
+            font-size: 0.9rem;
+
+            line-height: 1.75;
+        }
+
+
+        /* =========================================================
+           USE CASES
+        ========================================================= */
+
+        .usecase {
+            min-height: 230px;
+        }
+
+        .usecase-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 22px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,87,34,0.1);
+
+            border:
+                1px solid rgba(255,87,34,0.18);
+
+            font-size: 1.3rem;
+        }
+
+
+        /* =========================================================
+           VIDEO SHOWCASE
+        ========================================================= */
+
+        .video-grid {
+            max-width: 1250px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(300px, 1fr));
+
+            gap: 20px;
+
+            margin: auto;
+        }
+
+        .video-card {
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 15px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            background: #080b12;
+
+            transition: 0.4s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-7px);
+
+            border-color:
+                rgba(255,87,34,0.35);
+        }
+
+        .video-card iframe {
+            width: 100%;
+            height: 260px;
+
+            border: none;
+
+            display: block;
+        }
+
+        .video-card-title {
+            padding: 18px 20px;
+
+            color: #dfe3e8;
+
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           STATS
+        ========================================================= */
+
+        .stats {
+            max-width: 1100px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 1px;
+
+            margin: auto;
+
+            background: rgba(255,255,255,0.08);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 16px;
+
+            overflow: hidden;
+        }
+
+        .stat {
+            padding: 45px 25px;
+
+            text-align: center;
+
+            background: #080b12;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 8px;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    #ffffff,
+                    #ff7043
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .stat-label {
+            color: #888f9a;
+
+            font-size: 0.78rem;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        /* =========================================================
+           TECHNOLOGY
+        ========================================================= */
+
+        .technology {
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+        }
+
+        .tech-panel {
+            padding: 35px;
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            background:
+                rgba(255,255,255,0.025);
+        }
+
+        .tech-panel h3 {
+            margin-bottom: 25px;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 13px;
+
+            border-radius: 8px;
+
+            background: rgba(255,255,255,0.035);
+
+            color: #b9c0c9;
+
+            font-size: 0.86rem;
+        }
+
+        .tech-item span {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #ff5722;
+
+            box-shadow: 0 0 10px rgba(255,87,34,0.7);
+        }
+
+
+        /* =========================================================
+           TEAM
+        ========================================================= */
+
+        .team {
+            max-width: 1000px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+
+            margin: auto;
+        }
+
+        .member {
+            text-align: center;
+
+            padding: 35px 25px;
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255,255,255,0.07);
+
+            background:
+                rgba(255,255,255,0.025);
+
+            transition: 0.4s;
+        }
+
+        .member:hover {
+            transform: translateY(-8px);
+
+            border-color:
+                rgba(255,87,34,0.35);
+        }
+
+        .member img {
+            width: 115px;
+            height: 115px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            margin: 0 auto 20px;
+
+            border:
+                3px solid #ff5722;
+
+            box-shadow:
+                0 0 35px rgba(255,87,34,0.12);
+        }
+
+        .member h3 {
+            margin-bottom: 7px;
+        }
+
+        .member p {
+            color: #8e96a2;
+            font-size: 0.83rem;
+        }
+
+
+        /* =========================================================
+           CTA
+        ========================================================= */
+
+        .cta {
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 80px 30px;
+
+            text-align: center;
+
+            border-radius: 22px;
+
+            border:
+                1px solid rgba(255,255,255,0.1);
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(255,87,34,0.15),
+                    transparent 55%
+                ),
+                rgba(255,255,255,0.025);
+
+            overflow: hidden;
+        }
+
+        .cta h2 {
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            max-width: 600px;
+
+            margin: 0 auto 30px;
+
+            color: #929aa6;
+
+            line-height: 1.7;
+        }
 
         .contact-details {
-            line-height: 2;
+            margin-top: 30px;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 30px;
+
+            flex-wrap: wrap;
+
+            color: #aeb4bd;
+
+            font-size: 0.88rem;
         }
 
-            .contact-details a {
-                color: #ff784e;
-                font-weight: 600;
-            }
+        .contact-details a {
+            transition: 0.3s;
+        }
 
-                .contact-details a:hover {
-                    color: white;
-                }
+        .contact-details a:hover {
+            color: #ff7043;
+        }
 
-        /* FOOTER */
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
 
         footer {
+            padding: 35px 20px;
+
             text-align: center;
-            padding: 30px 20px;
-            background: #090d16;
-            color: #aaa;
-            border-top: 1px solid rgba(255,255,255,0.08);
+
+            color: #626a76;
+
+            font-size: 0.78rem;
+
+            border-top:
+                1px solid rgba(255,255,255,0.06);
         }
 
-        /* RESPONSIVE */
+        footer strong {
+            color: #9da4ae;
+        }
+
+
+        /* =========================================================
+           SCROLL REVEAL
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+
+            transform:
+                translateY(45px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+
+            transform:
+                translateX(-50px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+
+            transform:
+                translateX(0);
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
 
         @media(max-width:900px) {
-
-            .hero h1 {
-                font-size: 2.7rem;
-            }
 
             .nav {
                 padding: 0 20px;
             }
 
-                .nav nav {
-                    gap: 18px;
-                }
-
-                    .nav nav a {
-                        font-size: 0.85rem;
-                    }
-        }
-
-        @media(max-width:700px) {
-
-            .nav {
-                flex-direction: column;
-                height: auto;
-                padding: 15px;
+            .nav-links {
                 gap: 15px;
             }
 
-            body {
+            .nav-links a:not(.nav-cta) {
+                display: none;
+            }
+
+            .section {
+                padding: 90px 5%;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .technology {
+                grid-template-columns: 1fr;
+            }
+
+            .team {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media(max-width:600px) {
+
+            .hero {
                 padding-top: 120px;
             }
 
             .hero h1 {
-                font-size: 2.2rem;
+                letter-spacing: -3px;
             }
 
-            .hero p {
-                font-size: 1rem;
+            .hero-description {
+                font-size: 0.95rem;
             }
 
-            .section h2 {
-                font-size: 2rem;
+            .hero-video iframe {
+                height: 280px;
+            }
+
+            .video-card iframe {
+                height: 220px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .team {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-details {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .logo-name {
+                display: none;
             }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- NAV -->
 
-    <header class="nav">
+<!-- =========================================================
+     SCROLL PROGRESS
+========================================================= -->
 
-        <div class="logo">
-            <img src="images/logo.PNG" alt="logo">
-            <span class="logo-text">NONI</span>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
+
+<div class="background-grid"></div>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<header class="nav" id="navbar">
+
+    <a href="#home" class="logo">
+
+        <img src="images/logo.PNG" alt="NONI Logo">
+
+        <div class="logo-name">
+            NONI <span>ROBOTICS</span>
         </div>
 
-        <nav>
-            <a href="#video">Demo</a>
-            <a href="#features">Features</a>
-            <a href="#usecases">Use Cases</a>
-            <a href="#stats">Stats</a>
-            <a href="#team">Team</a>
-            <a href="#contact">Contact</a>
-        </nav>
+    </a>
 
-    </header>
 
-    <!-- HERO -->
-    <!-- HERO -->
+    <nav class="nav-links">
 
-    <section class="hero">
+        <a href="#home" class="active">Home</a>
 
-        <div class="hero-content">
+        <a href="#features">Features</a>
 
-            <h1>Noni AI-Powered Healthcare Robot</h1>
+        <a href="#usecases">Applications</a>
 
-            <!-- MAIN DEMO VIDEO -->
+        <a href="#demo">Demo</a>
 
-            <div class="hero-video">
+        <a href="#technology">Technology</a>
 
-                <iframe src="https://www.youtube.com/embed/6X6L71R5hjU?si=r4ZzQs7_2FvSbA89"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen
-                        style="width:90%;height:440px;">
-                </iframe>
+        <a href="#team">Team</a>
 
-            </div>
+        <a href="#contact" class="nav-cta">
+            Contact
+        </a>
 
-            <!--<h4 class="hero-video-text">
-                Watch NONI in action: performing autonomous navigation,
-                responding to voice commands, executing robotic arm tasks,
-                and assisting with home operations.
-            </h4>-->
-            <!--<a href="#video" class="btn">View More Demos</a>-->
+    </nav>
 
-        </div>
+</header>
 
-        <div class="glow"></div>
 
-    </section>
+<!-- =========================================================
+     HERO
+========================================================= -->
 
-    <!-- FEATURES -->
+<section class="hero" id="home">
 
-    <section id="features" class="section">
+    <div class="hero-content">
 
-        <h2>⚙ Features</h2>
+        <div class="eyebrow reveal">
 
-        <div class="grid">
+            <span class="eyebrow-dot"></span>
 
-            <div class="card">
-                <h3>Remote & Manual Control</h3>
-                <p>Precise laptop-based control for real-time hospital navigation and operational assistance.</p>
-            </div>
-
-            <div class="card">
-                <h3>Autonomous Hospital Navigation</h3>
-                <p>AI-powered mobility system that enables intelligent movement in dynamic hospital environments with obstacle avoidance.</p>
-            </div>
-
-            <div class="card">
-                <h3>Voice-Based Interaction</h3>
-                <p>Hands-free communication system allowing patients, staff, and attendants to interact with the robot using voice commands.</p>
-            </div>
-
-            <div class="card">
-                <h3>Medical Assistance Robotic Arm</h3>
-                <p>Multi-axis robotic arm designed for controlled handling of medicines, documents, samples, and small medical items.</p>
-            </div>
-
-            <div class="card">
-                <h3>AI Healthcare Assistant</h3>
-                <p>Integrated AI system (Gemini) for intelligent responses, hospital support tasks, and decision assistance.</p>
-            </div>
-
-            <div class="card">
-                <h3>Patient Monitoring System</h3>
-                <p>Real-time visual monitoring of patients, ICU rooms, and critical hospital zones for improved safety and awareness.</p>
-            </div>
-
-            <div class="card">
-                <h3>Infection Control & Disinfection Support</h3>
-                <p>Assists in hospital hygiene workflows by supporting disinfection processes and infection risk reduction systems.</p>
-            </div>
-
-            <div class="card">
-                <h3>Hospital Guidance & Information System</h3>
-                <p>Provides indoor navigation, department guidance, and delivers hospital announcements and health awareness information.</p>
-            </div>
-
-            <div class="card">
-                <h3>Food & Medical Supply Request System</h3>
-                <p>Allows patients and attendants to request meals, medicines, and essential hospital supplies efficiently through the system.</p>
-            </div>
-
-            <div class="card">
-                <h3>Smart Charging & System Connectivity</h3>
-                <p>Built-in charging ports and power management system ensuring continuous operation and stable connectivity in hospital environments.</p>
-            </div>
-
-            <div class="card">
-                <h3>Hospital Delivery Assistance</h3>
-                <p>Supports internal transport of medicines, documents, and small medical supplies across hospital departments.</p>
-            </div>
+            AI • ROBOTICS • AUTONOMOUS SYSTEMS
 
         </div>
 
-    </section>
 
-    <!-- USE CASES -->
+        <h1 class="reveal">
 
-    <section id="usecases" class="section dark">
+            Meet <span class="gradient">NONI</span>
 
-        <h2>🏠 Real Use Cases</h2>
+            <br>
 
-        <div class="grid">
+            The Future of Intelligent Service
 
-            <div class="card">
-                <h3>Telemedicine Support</h3>
-                <p>Enables patients and attendants to connect with doctors remotely for medical consultations and communication.</p>
-            </div>
-
-            <div class="card">
-                <h3>Disinfection & Infection Control</h3>
-                <p>
-                    Helps reduce the spread of bacteria and viruses by supporting
-                    hospital disinfection processes through autonomous movement,
-                    remote operation, and smart sanitization assistance in critical areas.
-                </p>
-            </div>
-
-            <div class="card">
-                <h3>Monitoring & Surveillance</h3>
-                <p>
-                    Provides real-time monitoring and surveillance of hospital environments
-                    to improve safety, security, and operational awareness, especially for
-                    ICU patients and baby incubators.
-                </p>
-            </div>
-
-            <div class="card">
-                <h3>Hospital Guidance & Promotions</h3>
-                <p>Assists visitors with navigation inside hospitals and supports awareness campaigns, announcements, and promotions.</p>
-            </div>
-
-            <div class="card">
-                <h3>Food & Medicine Ordering</h3>
-                <p>Allows patients and attendants to order food and medicine directly through the robot system.</p>
-            </div>
-
-            <div class="card">
-                <h3>Companionship & Entertainment</h3>
-                <p>Acts as a companion robot providing conversation, music, news updates, and emotional interaction.</p>
-            </div>
-
-            <div class="card">
-                <h3>Delivery Assistance</h3>
-                <p>Delivers items such as medicines, documents, or supplies within hospital environments.</p>
-            </div>
-
-            <div class="card">
-                <h3>Smart Charging & Connectivity</h3>
-                <p>Includes built-in charging ports and provides internet access support for connected operations.</p>
-            </div>
-        </div>
-
-    </section>
-    <!-- VIDEO -->
-
-    <section id="video" class="section dark">
-        <h2>🎥 NONI in Action</h2>
-
-        <div class="video-grid">
-            <iframe src="https://www.youtube.com/embed/77VOujunmVQ?si=Aaq_cvhw2o-f5X_D" allowfullscreen></iframe>
-
-            <iframe src="https://www.youtube.com/embed/Hsn2xEtdt2E" allowfullscreen></iframe>
-
-            <iframe src="https://www.youtube.com/embed/387btwJ3DLo" allowfullscreen></iframe>
-        </div>
-
-    </section>
+        </h1>
 
 
-    <!-- STATS -->
+        <p class="hero-description reveal">
 
-    <section id="stats" class="section">
+            An AI-powered autonomous service robot designed to assist,
+            interact, navigate and deliver — bringing intelligent robotics
+            into hospitals, hotels, restaurants, schools and modern
+            service environments.
 
-        <h2>📊 Performance Stats</h2>
+        </p>
 
-        <div class="grid">
 
-            <div class="card">
-                <h3>Load Capacity</h3>
-                <p>~2 Kg</p>
-            </div>
+        <div class="hero-buttons reveal">
 
-            <div class="card">
-                <h3>Speed</h3>
-                <p>0.5 m/s</p>
-            </div>
-
-            <div class="card">
-                <h3>Battery Life</h3>
-                <p>~2 Hours</p>
-            </div>
-
-            <div class="card">
-                <h3>Arm Accuracy</h3>
-                <p>±1 cm</p>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- TEAM -->
-
-    <section id="team" class="section dark">
-
-        <h2>👨‍💻 Team</h2>
-
-        <div class="team">
-
-            <div class="member">
-                <img src="images/MuhammadAli.jpg">
-                <h3>Muhammad Ali</h3>
-                <p>Lead Robotics Engineer</p>
-            </div>
-
-            <div class="member">
-                <img src="images/MuhammadAzan.jpg">
-                <h3>Muhammad Azan</h3>
-                <p>System Integration Engineer</p>
-            </div>
-
-            <div class="member">
-                <img src="images/MuhammadAyan.jpg">
-                <h3>Muhammad Ayan</h3>
-                <p>QA & Testing Engineer</p>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- CODE & RESUME -->
-
-    <section class="section">
-
-        <h2>💻 Code & Resume</h2>
-
-        <div class="links">
-
-            <a href="https://github.com/aleee-shaikh/Al-Jazari" target="_blank">
-                GitHub
+            <a href="#demo" class="btn btn-primary">
+                Explore NONI →
             </a>
 
-            <a href="AliShaikhResume.pdf" download>
-                Download Resume
+            <a href="#features" class="btn btn-secondary">
+                Discover Features
             </a>
 
         </div>
 
-    </section>
 
-    <!-- CONTACT -->
+        <div class="hero-video reveal">
 
-    <section id="contact" class="section dark">
+            <iframe
+                src="https://www.youtube.com/embed/urg1aObxEV0?si=R4tyvJkQAXa_0rby"
+                title="NONI AI Powered Service Robot"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
 
-        <h2>📩 Contact Me</h2>
+            <div class="video-label">
+                NONI • Prototype Demonstration
+            </div>
 
-        <div class="contact-info">
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FEATURES
+========================================================= -->
+
+<section class="section" id="features">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Core Capabilities
+        </div>
+
+        <h2>
+            Intelligence in Motion.
+        </h2>
+
+        <p>
+            NONI combines autonomous navigation, AI interaction,
+            computer vision and connected robotics into one
+            intelligent service platform.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                01 / NAVIGATION
+            </div>
+
+            <h3>
+                Autonomous Navigation
+            </h3>
 
             <p>
-                If you'd like to collaborate or learn more about NONI,
-                feel free to reach out:
-            </p>
-
-            <p class="contact-details">
-
-                📧
-                <a href="mailto:aleee_shaikh@yahoo.com">
-                    aleee_shaikh@yahoo.com
-                </a>
-
-                <br>
-
-                📱
-                <a href="tel:+923433443057">
-                    +92 343 3443057
-                </a>
-
+                Intelligent navigation allows NONI to move through
+                service environments while detecting and avoiding
+                obstacles.
             </p>
 
         </div>
 
-    </section>
 
-    <!-- FOOTER -->
+        <div class="card reveal">
 
-    <footer>
-        © 2026 Noni Robotics System | Ali Shaikh
-    </footer>
+            <div class="card-number">
+                02 / AI
+            </div>
+
+            <h3>
+                AI-Powered Assistant
+            </h3>
+
+            <p>
+                Conversational AI enables NONI to understand requests,
+                answer questions and assist users with intelligent
+                interactions.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                03 / VOICE
+            </div>
+
+            <h3>
+                Voice Interaction
+            </h3>
+
+            <p>
+                Users can communicate naturally with NONI through
+                voice-based commands and conversational interaction.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                04 / VISION
+            </div>
+
+            <h3>
+                Computer Vision
+            </h3>
+
+            <p>
+                Vision-based perception helps NONI understand its
+                surroundings and identify objects and obstacles.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                05 / DELIVERY
+            </div>
+
+            <h3>
+                Autonomous Delivery
+            </h3>
+
+            <p>
+                NONI can transport food, documents, medicines and
+                other small items between designated locations.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                06 / CONNECTIVITY
+            </div>
+
+            <h3>
+                Smart Connectivity
+            </h3>
+
+            <p>
+                Connected systems support remote monitoring,
+                communication and intelligent service operations.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                07 / GUIDANCE
+            </div>
+
+            <h3>
+                Visitor Guidance
+            </h3>
+
+            <p>
+                NONI can assist visitors with directions,
+                information and interactive guidance.
+            </p>
+
+        </div>
+
+
+        <div class="card reveal">
+
+            <div class="card-number">
+                08 / MONITORING
+            </div>
+
+            <h3>
+                Remote Monitoring
+            </h3>
+
+            <p>
+                Live camera and remote control capabilities provide
+                operational visibility when human supervision is needed.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     USE CASES
+========================================================= -->
+
+<section class="section dark" id="usecases">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Applications
+        </div>
+
+        <h2>
+            Built for Real-World Environments.
+        </h2>
+
+        <p>
+            NONI is designed as a flexible robotics platform that
+            can adapt to multiple industries and service workflows.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🏥
+            </div>
+
+            <h3>
+                Healthcare
+            </h3>
+
+            <p>
+                Patient assistance, hospital guidance, internal
+                delivery, telemedicine support and monitoring.
+            </p>
+
+        </div>
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🏨
+            </div>
+
+            <h3>
+                Hotels
+            </h3>
+
+            <p>
+                Guest reception, room-service delivery,
+                information assistance and guest engagement.
+            </p>
+
+        </div>
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🍽️
+            </div>
+
+            <h3>
+                Restaurants
+            </h3>
+
+            <p>
+                Food delivery, customer interaction,
+                promotions and interactive service experiences.
+            </p>
+
+        </div>
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🏫
+            </div>
+
+            <h3>
+                Schools & Colleges
+            </h3>
+
+            <p>
+                Visitor assistance, information delivery,
+                campus guidance and interactive learning.
+            </p>
+
+        </div>
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🏠
+            </div>
+
+            <h3>
+                Assisted Living
+            </h3>
+
+            <p>
+                Companionship, reminders, communication,
+                delivery assistance and interactive support.
+            </p>
+
+        </div>
+
+
+        <div class="card usecase reveal">
+
+            <div class="usecase-icon">
+                🏢
+            </div>
+
+            <h3>
+                Smart Facilities
+            </h3>
+
+            <p>
+                Autonomous internal transportation,
+                visitor interaction and intelligent facility services.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     VIDEO SHOWCASE
+========================================================= -->
+
+<section class="section" id="demo">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Demonstration
+        </div>
+
+        <h2>
+            NONI in Action.
+        </h2>
+
+        <p>
+            Explore different capabilities of the NONI robotics platform.
+        </p>
+
+    </div>
+
+
+    <div class="video-grid">
+
+
+        <div class="video-card reveal">
+
+            <iframe
+                src="https://www.youtube.com/embed/77VOujunmVQ"
+                title="NONI Demonstration"
+                allowfullscreen>
+            </iframe>
+
+            <div class="video-card-title">
+                Autonomous Robotics Demonstration
+            </div>
+
+        </div>
+
+
+        <div class="video-card reveal">
+
+            <iframe
+                src="https://www.youtube.com/embed/Hsn2xEtdt2E"
+                title="NONI Robot"
+                allowfullscreen>
+            </iframe>
+
+            <div class="video-card-title">
+                Intelligent Robot Interaction
+            </div>
+
+        </div>
+
+
+        <div class="video-card reveal">
+
+            <iframe
+                src="https://www.youtube.com/embed/387btwJ3DLo"
+                title="NONI Service Robot"
+                allowfullscreen>
+            </iframe>
+
+            <div class="video-card-title">
+                Service Robot in Action
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STATS
+========================================================= -->
+
+<section class="section dark" id="stats">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Prototype Specifications
+        </div>
+
+        <h2>
+            Engineered to Perform.
+        </h2>
+
+    </div>
+
+
+    <div class="stats">
+
+
+        <div class="stat reveal">
+
+            <div class="stat-number counter"
+                 data-target="2">
+                0
+            </div>
+
+            <div class="stat-label">
+                Kg Load Capacity
+            </div>
+
+        </div>
+
+
+        <div class="stat reveal">
+
+            <div class="stat-number counter"
+                 data-target="0.5"
+                 data-decimal="1">
+                0
+            </div>
+
+            <div class="stat-label">
+                m/s Speed
+            </div>
+
+        </div>
+
+
+        <div class="stat reveal">
+
+            <div class="stat-number counter"
+                 data-target="2">
+                0
+            </div>
+
+            <div class="stat-label">
+                Hours Battery
+            </div>
+
+        </div>
+
+
+        <div class="stat reveal">
+
+            <div class="stat-number">
+                AI
+            </div>
+
+            <div class="stat-label">
+                Powered
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     TECHNOLOGY
+========================================================= -->
+
+<section class="section" id="technology">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Technology
+        </div>
+
+        <h2>
+            Where Robotics Meets AI.
+        </h2>
+
+        <p>
+            NONI brings together software, hardware, artificial
+            intelligence and computer vision into a single platform.
+        </p>
+
+    </div>
+
+
+    <div class="technology">
+
+
+        <div class="tech-panel reveal-left">
+
+            <h3>
+                Intelligent Systems
+            </h3>
+
+            <div class="tech-list">
+
+                <div class="tech-item">
+                    <span></span>
+                    Artificial Intelligence
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Computer Vision
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Voice Interaction
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Autonomous Navigation
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Remote Monitoring
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tech-panel reveal">
+
+            <h3>
+                Robotics Platform
+            </h3>
+
+            <div class="tech-list">
+
+                <div class="tech-item">
+                    <span></span>
+                    Multi-Motor Drive System
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Obstacle Detection
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Autonomous Mobility
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Camera-Based Perception
+                </div>
+
+                <div class="tech-item">
+                    <span></span>
+                    Connected Control System
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     TEAM
+========================================================= -->
+
+<section class="section dark" id="team">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            The Team
+        </div>
+
+        <h2>
+            Building the Future.
+        </h2>
+
+        <p>
+            A robotics-focused team developing the next generation
+            of intelligent service systems.
+        </p>
+
+    </div>
+
+
+    <div class="team">
+
+
+        <div class="member reveal">
+
+            <img
+                src="images/MuhammadAli.jpg"
+                alt="Muhammad Ali">
+
+            <h3>
+                Muhammad Ali
+            </h3>
+
+            <p>
+                Lead Robotics Engineer
+            </p>
+
+        </div>
+
+
+        <div class="member reveal">
+
+            <img
+                src="images/MuhammadAzan.jpg"
+                alt="Muhammad Azan">
+
+            <h3>
+                Muhammad Azan
+            </h3>
+
+            <p>
+                System Integration Engineer
+            </p>
+
+        </div>
+
+
+        <div class="member reveal">
+
+            <img
+                src="images/MuhammadAyan.jpg"
+                alt="Muhammad Ayan">
+
+            <h3>
+                Muhammad Ayan
+            </h3>
+
+            <p>
+                QA & Testing Engineer
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CODE / RESUME
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-header reveal">
+
+        <div class="section-tag">
+            Explore More
+        </div>
+
+        <h2>
+            Behind the Robot.
+        </h2>
+
+        <p>
+            Explore the development work and professional background
+            behind the NONI project.
+        </p>
+
+    </div>
+
+
+    <div class="hero-buttons reveal">
+
+        <a
+            href="https://github.com/aleee-shaikh/Al-Jazari"
+            target="_blank"
+            class="btn btn-primary">
+
+            View GitHub →
+
+        </a>
+
+
+        <a
+            href="AliShaikhResume.pdf"
+            download
+            class="btn btn-secondary">
+
+            Download Resume
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+
+<section class="section dark" id="contact">
+
+    <div class="cta reveal">
+
+        <div class="section-tag">
+            Let's Build the Future
+        </div>
+
+        <h2>
+            Interested in NONI?
+        </h2>
+
+        <p>
+            Whether you're interested in collaboration, deployment,
+            partnerships, investment or simply want to learn more
+            about NONI, let's connect.
+        </p>
+
+
+        <a
+            href="mailto:aleee_shaikh@yahoo.com"
+            class="btn btn-primary">
+
+            Contact Me →
+
+        </a>
+
+
+        <div class="contact-details">
+
+            <a href="mailto:aleee_shaikh@yahoo.com">
+                📧 aleee_shaikh@yahoo.com
+            </a>
+
+            <a href="tel:+923433443057">
+                📱 +92 343 3443057
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+    © 2026 <strong>NONI Robotics System</strong>
+    · Built with AI, Robotics & Innovation
+
+</footer>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =========================================================
+       NAVBAR SCROLL EFFECT
+    ========================================================= */
+
+    const navbar =
+        document.getElementById("navbar");
+
+    window.addEventListener("scroll", () => {
+
+        if (window.scrollY > 40) {
+
+            navbar.classList.add("scrolled");
+
+        } else {
+
+            navbar.classList.remove("scrolled");
+
+        }
+
+    });
+
+
+    /* =========================================================
+       SCROLL PROGRESS
+    ========================================================= */
+
+    const progress =
+        document.getElementById("scrollProgress");
+
+    window.addEventListener("scroll", () => {
+
+        const scrollTop =
+            window.scrollY;
+
+        const documentHeight =
+            document.documentElement.scrollHeight
+            - window.innerHeight;
+
+        const percentage =
+            (scrollTop / documentHeight) * 100;
+
+        progress.style.width =
+            percentage + "%";
+
+    });
+
+
+    /* =========================================================
+       SCROLL REVEAL
+    ========================================================= */
+
+    const revealElements =
+        document.querySelectorAll(
+            ".reveal, .reveal-left"
+        );
+
+    const revealObserver =
+        new IntersectionObserver(
+
+            (entries) => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add(
+                            "active"
+                        );
+
+                        revealObserver.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+
+            {
+                threshold: 0.12
+            }
+
+        );
+
+
+    revealElements.forEach(element => {
+
+        revealObserver.observe(element);
+
+    });
+
+
+    /* =========================================================
+       ACTIVE NAVIGATION
+    ========================================================= */
+
+    const sections =
+        document.querySelectorAll(
+            "section[id]"
+        );
+
+    const navLinks =
+        document.querySelectorAll(
+            ".nav-links a"
+        );
+
+
+    window.addEventListener("scroll", () => {
+
+        let current = "";
+
+        sections.forEach(section => {
+
+            const sectionTop =
+                section.offsetTop - 150;
+
+            if (window.scrollY >= sectionTop) {
+
+                current =
+                    section.getAttribute("id");
+
+            }
+
+        });
+
+
+        navLinks.forEach(link => {
+
+            link.classList.remove("active");
+
+            if (
+                link.getAttribute("href")
+                === "#" + current
+            ) {
+
+                link.classList.add("active");
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================================================
+       ANIMATED COUNTERS
+    ========================================================= */
+
+    const counters =
+        document.querySelectorAll(".counter");
+
+    let countersStarted = false;
+
+
+    function animateCounters() {
+
+        if (countersStarted) return;
+
+        const statsSection =
+            document.getElementById("stats");
+
+        const rect =
+            statsSection.getBoundingClientRect();
+
+        if (
+            rect.top <
+            window.innerHeight * 0.8
+        ) {
+
+            countersStarted = true;
+
+            counters.forEach(counter => {
+
+                const target =
+                    parseFloat(
+                        counter.dataset.target
+                    );
+
+                const decimal =
+                    counter.dataset.decimal
+                    ? parseInt(
+                        counter.dataset.decimal
+                    )
+                    : 0;
+
+                let current = 0;
+
+                const increment =
+                    target / 50;
+
+
+                const update = () => {
+
+                    current += increment;
+
+                    if (current < target) {
+
+                        counter.innerText =
+                            current.toFixed(decimal);
+
+                        requestAnimationFrame(
+                            update
+                        );
+
+                    } else {
+
+                        counter.innerText =
+                            target.toFixed(decimal);
+
+                    }
+
+                };
+
+                update();
+
+            });
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        animateCounters
+    );
+
+
+    /* =========================================================
+       SMOOTH NAVIGATION
+    ========================================================= */
+
+    document
+        .querySelectorAll(
+            'a[href^="#"]'
+        )
+        .forEach(link => {
+
+            link.addEventListener(
+                "click",
+                function(event) {
+
+                    const targetId =
+                        this.getAttribute("href");
+
+                    const target =
+                        document.querySelector(
+                            targetId
+                        );
+
+                    if (!target) return;
+
+                    event.preventDefault();
+
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+            );
+
+        });
+
+</script>
+
 
 </body>
 </html>
